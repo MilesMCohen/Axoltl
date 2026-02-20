@@ -66,10 +66,16 @@ async function enableTilt() {
     typeof DeviceOrientationEvent !== "undefined" &&
     typeof DeviceOrientationEvent.requestPermission === "function"
   ) {
-    const permission = await DeviceOrientationEvent.requestPermission();
-    if (permission === "granted") {
-      window.addEventListener("deviceorientation", handleTilt);
-      tiltEnabled = true;
+    try {
+      const permission = await DeviceOrientationEvent.requestPermission();
+      if (permission === "granted") {
+        window.addEventListener("deviceorientation", handleTilt);
+        tiltEnabled = true;
+      } else {
+        alert("Motion permission denied. Go to Settings > Safari > Motion & Orientation Access to enable it.");
+      }
+    } catch (err) {
+      alert("Tilt error: " + err.message + "\n\nMake sure the page is served over HTTPS.");
     }
   } else {
     window.addEventListener("deviceorientation", handleTilt);
@@ -175,6 +181,22 @@ function draw() {
   ctx.font = "20px sans-serif";
   ctx.textAlign = "left";
   ctx.fillText("Score: " + score, 20, 30);
+
+  // Tilt debug
+  ctx.fillStyle = tiltEnabled ? "lime" : "gray";
+  ctx.fillText(
+    tiltEnabled ? `Tilt: ${tiltX.toFixed(1)}°` : "Tilt: off",
+    20,
+    55
+  );
+
+  // Tilt debug
+  ctx.fillStyle = tiltEnabled ? "lime" : "gray";
+  ctx.fillText(
+    tiltEnabled ? `Tilt: ${tiltX.toFixed(1)}°` : "Tilt: off",
+    20,
+    55
+  );
 }
 
 function loop() {
