@@ -60,23 +60,24 @@ function handleTilt(event) {
   tiltX = event.gamma || 0; // left/right tilt
 }
 
-// iOS permission
-async function enableTilt() {
+// iOS permission — must be called synchronously from a user gesture (no async/await)
+function enableTilt() {
   if (
     typeof DeviceOrientationEvent !== "undefined" &&
     typeof DeviceOrientationEvent.requestPermission === "function"
   ) {
-    try {
-      const permission = await DeviceOrientationEvent.requestPermission();
-      if (permission === "granted") {
-        window.addEventListener("deviceorientation", handleTilt);
-        tiltEnabled = true;
-      } else {
-        alert("Motion permission denied. Go to Settings > Safari > Motion & Orientation Access to enable it.");
-      }
-    } catch (err) {
-      alert("Tilt error: " + err.message + "\n\nMake sure the page is served over HTTPS.");
-    }
+    DeviceOrientationEvent.requestPermission()
+      .then(permission => {
+        if (permission === "granted") {
+          window.addEventListener("deviceorientation", handleTilt);
+          tiltEnabled = true;
+        } else {
+          alert("Motion permission denied. Go to Settings > Safari > Motion & Orientation Access to enable it.");
+        }
+      })
+      .catch(err => {
+        alert("Tilt error: " + err.message + "\n\nMake sure the page is served over HTTPS.");
+      });
   } else {
     window.addEventListener("deviceorientation", handleTilt);
     tiltEnabled = true;
@@ -208,9 +209,9 @@ function loop() {
 loop();
 
 // Start screen interaction
-window.addEventListener("pointerdown", async () => {
+window.addEventListener("pointerdown", () => {
   if (!gameStarted) {
-    await enableTilt();
+    enableTilt();
     gameStarted = true;
   } else if (gameOver) {
     // Reset
