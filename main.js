@@ -59,9 +59,12 @@ setInterval(() => {
   });
 }, 1000);
 
-// Spawn a mean fish rising from the bottom, always hunting the player
+// Spawn a mean fish rising from the bottom, always hunting the player.
+// Require at least 15 s of play so a restart mid-interval can't fire immediately.
+const MEAN_FISH_GRACE = 15000;
 setInterval(() => {
   if (!state.gameStarted || state.gameOver) return;
+  if (performance.now() - state.gameStartTime < MEAN_FISH_GRACE) return;
   meanFishes.push({
     x: MEAN_FISH_SIZE / 2 + Math.random() * (canvas.width - MEAN_FISH_SIZE),
     y: canvas.height + MEAN_FISH_SIZE,

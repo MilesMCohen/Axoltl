@@ -1,4 +1,4 @@
-import { state, player, bullets, enemies, bugs, VERSION, BASE_BULLET_INTERVAL } from "./state.js";
+import { state, player, bullets, enemies, bugs, meanFishes, VERSION, BASE_BULLET_INTERVAL } from "./state.js";
 
 export function initInput() {
   document.getElementById("version-label").textContent = `v${VERSION}`;
@@ -9,6 +9,7 @@ export function initInput() {
     player.targetX = player.x;
     player.targetY = player.y;
     state.gameStarted = true;
+    state.gameStartTime = performance.now();
     document.getElementById("start-overlay").style.display = "none";
   };
 
@@ -23,9 +24,11 @@ export function initInput() {
       state.bulletInterval = BASE_BULLET_INTERVAL;
       state.lastBulletTime = 0;
       state.powerUpExpiry  = 0;
-      enemies.length = 0;
-      bullets.length = 0;
-      bugs.length    = 0;
+      enemies.length    = 0;
+      bullets.length    = 0;
+      bugs.length       = 0;
+      meanFishes.length = 0;
+      state.gameStartTime = performance.now();
       player.x = window.innerWidth / 2;
       player.y = window.innerHeight / 2;
       player.targetX = player.x;

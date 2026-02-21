@@ -6,7 +6,7 @@ export const PLAYER_SPEED = 6;
 export const PLAYER_RADIUS = 28;
 export const BUG_RADIUS = 16;
 
-export const MEAN_FISH_SPEED    = 3;     // px/frame — slower than the player
+export const MEAN_FISH_SPEED    = 2;     // px/frame — slower than the player
 export const MEAN_FISH_SIZE     = 110;   // draw size
 export const MEAN_FISH_MAX_HP   = 2;     // bubbles needed to kill it
 export const MEAN_FISH_INTERVAL = 20000; // ms between mean-fish spawns
@@ -27,6 +27,7 @@ export const state = {
   bulletInterval:  BASE_BULLET_INTERVAL,
   lastBulletTime:  0,
   powerUpExpiry:   0,                   // performance.now() deadline; 0 = inactive
+  gameStartTime:   0,                   // performance.now() when the current round began
 };
 
 export const player = {
