@@ -54,13 +54,10 @@ export function draw() {
     drawFish(e.x, e.y, e.size, e.angle ?? 0);
   });
 
-  // Mean fish — drawn with a red tint and health pips
+  // Mean fish — drawn in red and health pips
+  const MEAN_FISH_COLORS = { body: "#8c2e2e", dark: "#551a1a", belly: "#e8b8b8", fin: "#701d1d" };
   meanFishes.forEach(mf => {
-    ctx.save();
-    ctx.filter = "hue-rotate(155deg) saturate(2.2) brightness(1.1)";
-    drawFish(mf.x, mf.y, mf.size, mf.angle ?? 0);
-    ctx.filter = "none";
-    ctx.restore();
+    drawFish(mf.x, mf.y, mf.size, mf.angle ?? 0, MEAN_FISH_COLORS);
 
     // Health pips above the fish
     const pipR   = 7;

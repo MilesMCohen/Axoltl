@@ -3,17 +3,17 @@ import { ctx } from "./canvas.js";
 // Draws a menacing fish facing in the given direction.
 // angle=0 means facing down (default travel direction); rotate to match velocity.
 // cx/cy is the body center; size controls overall scale.
-export function drawFish(cx, cy, size, angle = 0) {
+export function drawFish(cx, cy, size, angle = 0, colors = {}) {
   const s = size / 50;
 
   ctx.save();
   ctx.translate(cx, cy);
   ctx.rotate(angle);
 
-  const bodyColor  = "#2e6b8c";
-  const bodyDark   = "#1a3f55";
-  const bellyColor = "#b8dce8";
-  const finColor   = "#1d5570";
+  const bodyColor  = colors.body   ?? "#2e6b8c";
+  const bodyDark   = colors.dark   ?? "#1a3f55";
+  const bellyColor = colors.belly  ?? "#b8dce8";
+  const finColor   = colors.fin    ?? "#1d5570";
 
   // Forked tail (top)
   ctx.beginPath();
