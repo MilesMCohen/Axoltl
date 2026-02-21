@@ -1,6 +1,8 @@
 // Arcade Tilt Shooter - Single File Starter
 // Works with iPad Safari (requests motion permission)
 
+const VERSION = "1.0.3";
+
 const canvas = document.createElement("canvas");
 const ctx = canvas.getContext("2d");
 document.body.style.margin = "0";
@@ -130,6 +132,9 @@ function draw() {
     ctx.fillText("Tilt Arcade Shooter", canvas.width / 2, canvas.height / 2 - 40);
     ctx.fillText("Tap to Shoot", canvas.width / 2, canvas.height / 2);
     ctx.fillText("Enable Tilt & Start", canvas.width / 2, canvas.height / 2 + 40);
+    ctx.fillStyle = "#555";
+    ctx.font = "16px sans-serif";
+    ctx.fillText(`v${VERSION}`, canvas.width / 2, canvas.height / 2 + 80);
     return;
   }
 
@@ -173,7 +178,6 @@ function draw() {
   ctx.textAlign = "left";
   ctx.fillText("Score: " + score, 20, 30);
 
-  // Tilt debug
   ctx.fillStyle = tiltEnabled ? "lime" : "gray";
   ctx.fillText(
     tiltEnabled ? `Tilt: ${tiltX.toFixed(1)}°` : "Tilt: off",
@@ -181,13 +185,8 @@ function draw() {
     55
   );
 
-  // Tilt debug
-  ctx.fillStyle = tiltEnabled ? "lime" : "gray";
-  ctx.fillText(
-    tiltEnabled ? `Tilt: ${tiltX.toFixed(1)}°` : "Tilt: off",
-    20,
-    55
-  );
+  ctx.fillStyle = "#555";
+  ctx.fillText(`v${VERSION}`, 20, 80);
 }
 
 function loop() {
