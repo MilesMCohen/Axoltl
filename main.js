@@ -1,7 +1,7 @@
 // Arcade Tilt Shooter - Single File Starter
 // Works with iPad Safari (requests motion permission)
 
-const VERSION = "1.0.3";
+const VERSION = "1.0.4";
 
 const canvas = document.createElement("canvas");
 const ctx = canvas.getContext("2d");
@@ -125,18 +125,7 @@ function draw() {
   ctx.fillStyle = "#111";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  if (!gameStarted) {
-    ctx.fillStyle = "white";
-    ctx.font = "28px sans-serif";
-    ctx.textAlign = "center";
-    ctx.fillText("Tilt Arcade Shooter", canvas.width / 2, canvas.height / 2 - 40);
-    ctx.fillText("Tap to Shoot", canvas.width / 2, canvas.height / 2);
-    ctx.fillText("Enable Tilt & Start", canvas.width / 2, canvas.height / 2 + 40);
-    ctx.fillStyle = "#555";
-    ctx.font = "16px sans-serif";
-    ctx.fillText(`v${VERSION}`, canvas.width / 2, canvas.height / 2 + 80);
-    return;
-  }
+  if (!gameStarted) return;
 
   if (gameOver) {
     ctx.fillStyle = "red";
@@ -197,22 +186,29 @@ function loop() {
 
 loop();
 
-// All tap interactions in one handler so iOS gesture context is unambiguous
+// Start button — real HTML button click is the most trusted iOS user gesture
+document.getElementById("start-btn").onclick = () => {
+  enableTilt();
+  gameStarted = true;
+  document.getElementById("start-overlay").style.display = "none";
+};
+
+// Tap to shoot during gameplay
 window.addEventListener("pointerdown", () => {
-  if (!gameStarted) {
-    enableTilt();
-    gameStarted = true;
-  } else if (gameOver) {
-    score = 0;
-    enemies.length = 0;
-    bullets.length = 0;
-    gameOver = false;
-  } else {
-    bullets.push({
-      x: player.x,
-      y: player.y - 20,
-      radius: 5,
-      speed: 8
-    });
-  }
+  if (!gameStarted || gameOver) return;
+  bullets.push({
+    x: player.x,
+    y: player.y - 20,
+    radius: 5,
+    speed: 8
+  });
+});
+
+// Tap to restart after game over
+window.addEventListener("pointerdown", () => {
+  if (!gameOver) return;
+  score = 0;
+  enemies.length = 0;
+  bullets.length = 0;
+  gameOver = false;
 });
