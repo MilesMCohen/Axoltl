@@ -44,16 +44,6 @@ setInterval(() => {
   if (gameStarted && !gameOver) spawnEnemy();
 }, 1000);
 
-// Touch to shoot
-window.addEventListener("pointerdown", () => {
-  if (!gameStarted || gameOver) return;
-  bullets.push({
-    x: player.x,
-    y: player.y - 20,
-    radius: 5,
-    speed: 8
-  });
-});
 
 // Tilt controls
 function handleTilt(event) {
@@ -208,16 +198,22 @@ function loop() {
 
 loop();
 
-// Start screen interaction
+// All tap interactions in one handler so iOS gesture context is unambiguous
 window.addEventListener("pointerdown", () => {
   if (!gameStarted) {
     enableTilt();
     gameStarted = true;
   } else if (gameOver) {
-    // Reset
     score = 0;
     enemies.length = 0;
     bullets.length = 0;
     gameOver = false;
+  } else {
+    bullets.push({
+      x: player.x,
+      y: player.y - 20,
+      radius: 5,
+      speed: 8
+    });
   }
 });
