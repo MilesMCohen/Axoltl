@@ -59,21 +59,35 @@ export function draw() {
   meanFishes.forEach(mf => {
     drawFish(mf.x, mf.y, mf.size, mf.angle ?? 0, MEAN_FISH_COLORS);
 
-    // Health pips above the fish
-    const pipR   = 7;
-    const pipGap = pipR * 2.6;
-    const pipY   = mf.y - mf.size * 0.72;
-    const startX = mf.x - ((MEAN_FISH_MAX_HP - 1) / 2) * pipGap;
-    for (let p = 0; p < MEAN_FISH_MAX_HP; p++) {
-      const px = startX + p * pipGap;
+    // Health bar — always horizontal above the fish, regardless of rotation
+    const barW  = 54;
+    const barH  = 8;
+    const barR  = barH / 2;
+    const barX  = mf.x - barW / 2;
+    const barY  = mf.y - mf.size * 0.68;
+    const fillW = barW * (mf.hp / MEAN_FISH_MAX_HP);
+
+    ctx.save();
+    ctx.shadowColor = "rgba(0,0,0,0.6)";
+    ctx.shadowBlur  = 4;
+
+    // Dark track
+    ctx.fillStyle = "rgba(0,0,0,0.55)";
+    ctx.beginPath();
+    ctx.roundRect(barX, barY, barW, barH, barR);
+    ctx.fill();
+
+    // Filled portion
+    if (fillW > barR * 2) {
+      ctx.shadowColor = "#ff4040";
+      ctx.shadowBlur  = 6;
+      ctx.fillStyle   = "#e82020";
       ctx.beginPath();
-      ctx.arc(px, pipY, pipR, 0, Math.PI * 2);
-      ctx.fillStyle   = p < mf.hp ? "#ff3030" : "rgba(255,255,255,0.18)";
+      ctx.roundRect(barX, barY, fillW, barH, barR);
       ctx.fill();
-      ctx.strokeStyle = "rgba(0,0,0,0.5)";
-      ctx.lineWidth   = 1.5;
-      ctx.stroke();
     }
+
+    ctx.restore();
   });
 
   // Bugs — fade out during the final BUG_FADE_DURATION ms of their lifetime

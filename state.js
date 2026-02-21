@@ -8,7 +8,7 @@ export const BUG_RADIUS = 16;
 
 export const MEAN_FISH_SPEED    = 3;     // px/frame — slower than the player
 export const MEAN_FISH_SIZE     = 110;   // draw size
-export const MEAN_FISH_MAX_HP   = 3;     // bubbles needed to kill it
+export const MEAN_FISH_MAX_HP   = 2;     // bubbles needed to kill it
 export const MEAN_FISH_INTERVAL = 20000; // ms between mean-fish spawns
 
 export const BASE_BULLET_INTERVAL  = 700;  // ms between bubbles normally
