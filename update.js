@@ -1,18 +1,34 @@
 import { canvas } from "./canvas.js";
-import { state, player, bullets, enemies, PLAYER_SPEED, PLAYER_RADIUS } from "./state.js";
+import {
+  state, player, bullets, enemies, bugs,
+  PLAYER_SPEED, PLAYER_RADIUS, BUG_RADIUS, MIN_BULLET_INTERVAL,
+} from "./state.js";
 
 export function update() {
   if (!state.gameStarted || state.gameOver) return;
 
-  // Move player toward tap target at constant speed
+  // Auto-shoot bubbles at the current (dynamic) interval
+  const now = performance.now();
+  if (now - state.lastBulletTime >= state.bulletInterval) {
+    state.lastBulletTime = now;
+    bullets.push({
+      x: player.x,
+      y: player.y - PLAYER_RADIUS,
+      radius: 6,
+      speed: 10,
+    });
+  }
+
+  // Move player toward tap target — speed increases with each bug eaten
+  const speed = PLAYER_SPEED + state.speedBoost;
   const dx = player.targetX - player.x;
   const dy = player.targetY - player.y;
   const dist = Math.sqrt(dx * dx + dy * dy);
-  if (dist > PLAYER_SPEED) {
+  if (dist > speed) {
     // atan2 + PI/2 converts canvas movement angle to "facing up = 0" draw angle
     player.angle = Math.atan2(dy, dx) + Math.PI / 2;
-    player.x += (dx / dist) * PLAYER_SPEED;
-    player.y += (dy / dist) * PLAYER_SPEED;
+    player.x += (dx / dist) * speed;
+    player.y += (dy / dist) * speed;
   } else {
     player.x = player.targetX;
     player.y = player.targetY;
@@ -67,5 +83,45 @@ export function update() {
     }
 
     if (e.y > canvas.height + e.size) enemies.splice(ei, 1);
+  }
+
+  // Update bugs — gentle wander, bounce off edges, eaten by player
+  const MAX_BUG_SPEED = 1.6;
+  for (let i = bugs.length - 1; i >= 0; i--) {
+    const bug = bugs[i];
+
+    // Slightly nudge velocity each frame for organic wandering
+    bug.vx += (Math.random() - 0.5) * 0.18;
+    bug.vy += (Math.random() - 0.5) * 0.18;
+
+    // Clamp to max wander speed
+    const spd = Math.sqrt(bug.vx * bug.vx + bug.vy * bug.vy);
+    if (spd > MAX_BUG_SPEED) {
+      bug.vx = (bug.vx / spd) * MAX_BUG_SPEED;
+      bug.vy = (bug.vy / spd) * MAX_BUG_SPEED;
+    }
+
+    bug.x += bug.vx;
+    bug.y += bug.vy;
+
+    // Rotate to face direction of travel (up = angle 0)
+    if (spd > 0.05) bug.angle = Math.atan2(bug.vy, bug.vx) + Math.PI / 2;
+
+    // Bounce off screen edges
+    const m = BUG_RADIUS;
+    if (bug.x < m)                    { bug.x = m;                    bug.vx =  Math.abs(bug.vx); }
+    if (bug.x > canvas.width  - m)    { bug.x = canvas.width  - m;    bug.vx = -Math.abs(bug.vx); }
+    if (bug.y < m)                    { bug.y = m;                     bug.vy =  Math.abs(bug.vy); }
+    if (bug.y > canvas.height - m)    { bug.y = canvas.height - m;     bug.vy = -Math.abs(bug.vy); }
+
+    // Player eats the bug
+    const ex = bug.x - player.x;
+    const ey = bug.y - player.y;
+    if (Math.sqrt(ex * ex + ey * ey) < BUG_RADIUS + PLAYER_RADIUS * 0.85) {
+      bugs.splice(i, 1);
+      state.bugsEaten++;
+      state.speedBoost    = Math.min(6,                   state.speedBoost    + 0.8);
+      state.bulletInterval = Math.max(MIN_BULLET_INTERVAL, state.bulletInterval - 35);
+    }
   }
 }

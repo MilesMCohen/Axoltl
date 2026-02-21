@@ -1,4 +1,4 @@
-import { state, player, bullets, enemies, VERSION } from "./state.js";
+import { state, player, bullets, enemies, bugs, VERSION, BASE_BULLET_INTERVAL } from "./state.js";
 
 export function initInput() {
   document.getElementById("version-label").textContent = `v${VERSION}`;
@@ -17,10 +17,15 @@ export function initInput() {
     if (!state.gameStarted) return;
 
     if (state.gameOver) {
-      state.score = 0;
-      state.gameOver = false;
+      state.score          = 0;
+      state.gameOver       = false;
+      state.bugsEaten      = 0;
+      state.speedBoost     = 0;
+      state.bulletInterval = BASE_BULLET_INTERVAL;
+      state.lastBulletTime = 0;
       enemies.length = 0;
       bullets.length = 0;
+      bugs.length    = 0;
       player.x = window.innerWidth / 2;
       player.y = window.innerHeight / 2;
       player.targetX = player.x;

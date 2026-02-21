@@ -1,7 +1,8 @@
 import { canvas, ctx } from "./canvas.js";
-import { state, player, bullets, enemies, VERSION, PLAYER_RADIUS } from "./state.js";
+import { state, player, bullets, enemies, bugs, VERSION, PLAYER_RADIUS } from "./state.js";
 import { drawAxolotl } from "./axolotl.js";
 import { drawFish } from "./fish.js";
+import { drawBug } from "./bug.js";
 
 export function draw() {
   ctx.fillStyle = "#111";
@@ -53,13 +54,39 @@ export function draw() {
     drawFish(e.x, e.y, e.size, e.angle ?? 0);
   });
 
+  // Bugs
+  bugs.forEach(b => drawBug(b.x, b.y, b.angle ?? 0));
+
   // HUD
   ctx.fillStyle = "white";
   ctx.font = "22px sans-serif";
   ctx.textAlign = "left";
   ctx.fillText("Score: " + state.score, 20, 36);
 
+  // Power pip indicators — one small glowing dot per bug eaten
+  if (state.bugsEaten > 0) {
+    const pipCount = Math.min(state.bugsEaten, 8);
+    const pipRadius   = 6;
+    const pipSpacing  = 17;
+    const startX      = 20 + pipRadius;
+    const pipY        = 78;
+    for (let i = 0; i < pipCount; i++) {
+      const px = startX + i * pipSpacing;
+      const glow = ctx.createRadialGradient(px, pipY, 0, px, pipY, pipRadius * 2.2);
+      glow.addColorStop(0, "rgba(200, 255, 60, 0.5)");
+      glow.addColorStop(1, "rgba(200, 255, 60, 0)");
+      ctx.beginPath();
+      ctx.arc(px, pipY, pipRadius * 2.2, 0, Math.PI * 2);
+      ctx.fillStyle = glow;
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(px, pipY, pipRadius, 0, Math.PI * 2);
+      ctx.fillStyle = "#c8ff40";
+      ctx.fill();
+    }
+  }
+
   ctx.fillStyle = "#555";
   ctx.font = "16px sans-serif";
-  ctx.fillText(`v${VERSION}`, 20, 60);
+  ctx.fillText(`v${VERSION}`, 20, canvas.height - 14);
 }

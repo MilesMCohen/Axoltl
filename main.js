@@ -1,21 +1,31 @@
 import { canvas } from "./canvas.js";
-import { state, player, bullets, enemies, PLAYER_RADIUS } from "./state.js";
+import { state, player, bullets, enemies, bugs, PLAYER_RADIUS } from "./state.js";
 import { update } from "./update.js";
 import { draw } from "./draw.js";
 import { initInput } from "./input.js";
 
 initInput();
 
-// Auto-shoot upward on a fixed interval
-setInterval(() => {
+// Bullet timing is now handled inside update() so the interval can change dynamically.
+
+// Spawn a bug at a random position, up to MAX_BUGS on screen at once.
+const MAX_BUGS = 5;
+function spawnBug() {
   if (!state.gameStarted || state.gameOver) return;
-  bullets.push({
-    x: player.x,
-    y: player.y - PLAYER_RADIUS,
-    radius: 6,
-    speed: 10,
+  if (bugs.length >= MAX_BUGS) return;
+  const margin = 60;
+  bugs.push({
+    x: margin + Math.random() * (canvas.width  - margin * 2),
+    y: margin + Math.random() * (canvas.height - margin * 2),
+    vx: (Math.random() - 0.5) * 1.6,
+    vy: (Math.random() - 0.5) * 1.6,
+    angle: 0,
   });
-}, 400);
+}
+
+// First bug appears quickly; after that one arrives every ~5 s
+setTimeout(spawnBug, 1500);
+setInterval(spawnBug, 5000);
 
 // Spawn enemies aimed at the player with a small random spread
 setInterval(() => {
