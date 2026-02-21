@@ -3,6 +3,7 @@ import {
   state, player, bullets, enemies, bugs,
   PLAYER_SPEED, PLAYER_RADIUS, BUG_RADIUS,
   BASE_BULLET_INTERVAL, POWER_BULLET_INTERVAL, POWER_SPEED_BOOST, POWER_DURATION,
+  BUG_LIFETIME,
 } from "./state.js";
 
 export function update() {
@@ -123,7 +124,13 @@ export function update() {
     if (bug.y < m)                    { bug.y = m;                     bug.vy =  Math.abs(bug.vy); }
     if (bug.y > canvas.height - m)    { bug.y = canvas.height - m;     bug.vy = -Math.abs(bug.vy); }
 
-    // Player eats the bug — activate (or reset) the 10-second power-up
+    // Expire bug if it has been alive too long
+    if (now - bug.spawnTime >= BUG_LIFETIME) {
+      bugs.splice(i, 1);
+      continue;
+    }
+
+    // Player eats the bug — activate (or reset) the power-up
     const ex = bug.x - player.x;
     const ey = bug.y - player.y;
     if (Math.sqrt(ex * ex + ey * ey) < BUG_RADIUS + PLAYER_RADIUS * 0.85) {

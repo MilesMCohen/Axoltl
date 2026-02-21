@@ -1,5 +1,5 @@
 import { canvas, ctx } from "./canvas.js";
-import { state, player, bullets, enemies, bugs, VERSION, PLAYER_RADIUS, POWER_DURATION } from "./state.js";
+import { state, player, bullets, enemies, bugs, VERSION, PLAYER_RADIUS, POWER_DURATION, BUG_LIFETIME, BUG_FADE_DURATION } from "./state.js";
 import { drawAxolotl } from "./axolotl.js";
 import { drawFish } from "./fish.js";
 import { drawBug } from "./bug.js";
@@ -54,8 +54,14 @@ export function draw() {
     drawFish(e.x, e.y, e.size, e.angle ?? 0);
   });
 
-  // Bugs
-  bugs.forEach(b => drawBug(b.x, b.y, b.angle ?? 0));
+  // Bugs — fade out during the final BUG_FADE_DURATION ms of their lifetime
+  const now = performance.now();
+  bugs.forEach(b => {
+    const age = now - b.spawnTime;
+    const fadeStart = BUG_LIFETIME - BUG_FADE_DURATION;
+    const alpha = age > fadeStart ? 1 - (age - fadeStart) / BUG_FADE_DURATION : 1;
+    drawBug(b.x, b.y, b.angle ?? 0, alpha);
+  });
 
   // HUD
   ctx.fillStyle = "white";

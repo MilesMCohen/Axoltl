@@ -10,6 +10,8 @@ export const BASE_BULLET_INTERVAL  = 700;  // ms between bubbles normally
 export const POWER_BULLET_INTERVAL = 350;  // ms between bubbles while powered up
 export const POWER_SPEED_BOOST     = 4;    // px/frame added while powered up
 export const POWER_DURATION        = 5000; // ms the power-up lasts
+export const BUG_LIFETIME          = 12000; // ms before an uneaten bug disappears
+export const BUG_FADE_DURATION     = 2000;  // ms over which the bug fades out before vanishing
 
 // Mutable game state wrapped in an object so imports stay in sync
 export const state = {

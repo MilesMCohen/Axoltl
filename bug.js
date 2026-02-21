@@ -2,10 +2,11 @@ import { ctx } from "./canvas.js";
 
 // Draws a firefly-style bug facing up at angle=0.
 // cx/cy is the center; collision radius is ~16px at scale 1.
-export function drawBug(cx, cy, angle = 0) {
+export function drawBug(cx, cy, angle = 0, alpha = 1) {
   const s = 0.9;
 
   ctx.save();
+  ctx.globalAlpha = alpha;
   ctx.translate(cx, cy);
   ctx.rotate(angle);
 

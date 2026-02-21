@@ -20,6 +20,7 @@ function spawnBug() {
     vx: (Math.random() - 0.5) * 1.6,
     vy: (Math.random() - 0.5) * 1.6,
     angle: 0,
+    spawnTime: performance.now(),
   });
 }
 
