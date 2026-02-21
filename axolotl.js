@@ -54,32 +54,49 @@ export function drawAxolotl(cx, cy, r, angle) {
   ctx.fill();
 
   // Gills — 3 feathery stalks per side
+  // Each stalk has a central spine with small filaments branching off both
+  // sides, shortening toward the tip, giving the characteristic feather look.
   function drawGill(gx, gy, tilt, len) {
     ctx.save();
     ctx.translate(gx, gy);
     ctx.rotate(tilt);
     ctx.lineCap = "round";
-    ctx.lineWidth = 2.5 * s;
     ctx.strokeStyle = gillColor;
 
-    ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, -len); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(0, -len * 0.45); ctx.lineTo(-len * 0.48, -len * 0.82); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(0, -len * 0.45); ctx.lineTo( len * 0.48, -len * 0.82); ctx.stroke();
-
+    // Central spine
+    ctx.lineWidth = 2 * s;
     ctx.beginPath();
-    ctx.arc(0, -len, 2.2 * s, 0, Math.PI * 2);
-    ctx.fillStyle = gillColor;
-    ctx.fill();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(0, -len);
+    ctx.stroke();
+
+    // Filaments: 6 pairs, shorter near the tip
+    ctx.lineWidth = 1.2 * s;
+    const count = 6;
+    for (let i = 1; i <= count; i++) {
+      const frac  = i / (count + 1);
+      const y     = -len * frac;
+      const flen  = len * 0.38 * (1 - frac * 0.45);
+      for (const side of [-1, 1]) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(side * flen, y - flen * 0.35);
+        ctx.stroke();
+      }
+    }
+
     ctx.restore();
   }
 
   const gl = 16 * s;
-  drawGill(-15 * s, -24 * s, -0.85, gl * 0.82);
-  drawGill(-17 * s, -27 * s, -0.45,  gl);
-  drawGill(-12 * s, -28 * s, -1.15, gl * 0.72);
-  drawGill( 15 * s, -24 * s,  0.85, gl * 0.82);
-  drawGill( 17 * s, -27 * s,  0.45,  gl);
-  drawGill( 12 * s, -28 * s,  1.15, gl * 0.72);
+  // Head: center (0, −14s), radius 16s.
+  // Gill bases at −130°, −150°, −168° — spread down the upper-side arc.
+  drawGill(-10.3 * s, -26.3 * s, -0.70, gl * 0.80); // −130°
+  drawGill(-13.9 * s, -22.0 * s, -1.05,  gl);        // −150°
+  drawGill(-15.6 * s, -17.3 * s, -1.36, gl * 0.85);  // −168°
+  drawGill( 10.3 * s, -26.3 * s,  0.70, gl * 0.80);
+  drawGill( 13.9 * s, -22.0 * s,  1.05,  gl);
+  drawGill( 15.6 * s, -17.3 * s,  1.36, gl * 0.85);
 
   // Eyes
   for (const [ex, ep] of [[-6, -1], [6, 1]]) {
