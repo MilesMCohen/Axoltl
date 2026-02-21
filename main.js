@@ -1,5 +1,5 @@
 import { canvas } from "./canvas.js";
-import { state, player, bullets, enemies, bugs, PLAYER_RADIUS } from "./state.js";
+import { state, player, bullets, enemies, bugs, meanFishes, PLAYER_RADIUS, MEAN_FISH_SIZE, MEAN_FISH_MAX_HP, MEAN_FISH_INTERVAL } from "./state.js";
 import { update } from "./update.js";
 import { draw } from "./draw.js";
 import { initInput } from "./input.js";
@@ -58,6 +58,20 @@ setInterval(() => {
     vx:   nx * totalSpeed,
   });
 }, 1000);
+
+// Spawn a mean fish rising from the bottom, always hunting the player
+setInterval(() => {
+  if (!state.gameStarted || state.gameOver) return;
+  meanFishes.push({
+    x: MEAN_FISH_SIZE / 2 + Math.random() * (canvas.width - MEAN_FISH_SIZE),
+    y: canvas.height + MEAN_FISH_SIZE,
+    size: MEAN_FISH_SIZE,
+    hp: MEAN_FISH_MAX_HP,
+    vx: 0,
+    vy: 0,
+    angle: Math.PI, // starts facing up
+  });
+}, MEAN_FISH_INTERVAL);
 
 function loop() {
   update();

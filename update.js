@@ -1,9 +1,9 @@
 import { canvas } from "./canvas.js";
 import {
-  state, player, bullets, enemies, bugs,
+  state, player, bullets, enemies, bugs, meanFishes,
   PLAYER_SPEED, PLAYER_RADIUS, BUG_RADIUS,
   BASE_BULLET_INTERVAL, POWER_BULLET_INTERVAL, POWER_SPEED_BOOST, POWER_DURATION,
-  BUG_LIFETIME,
+  BUG_LIFETIME, MEAN_FISH_SPEED,
 } from "./state.js";
 
 export function update() {
@@ -138,6 +138,55 @@ export function update() {
       state.powerUpExpiry  = now + POWER_DURATION;
       state.speedBoost     = POWER_SPEED_BOOST;
       state.bulletInterval = POWER_BULLET_INTERVAL;
+    }
+  }
+
+  // Update mean fish — always home toward the player
+  for (let mi = meanFishes.length - 1; mi >= 0; mi--) {
+    const mf = meanFishes[mi];
+
+    const dx = player.x - mf.x;
+    const dy = player.y - mf.y;
+    const len = Math.sqrt(dx * dx + dy * dy);
+    if (len > 0) {
+      mf.vx = (dx / len) * MEAN_FISH_SPEED;
+      mf.vy = (dy / len) * MEAN_FISH_SPEED;
+    }
+    mf.x += mf.vx;
+    mf.y += mf.vy;
+
+    // Face the direction of travel (fish drawn pointing "down" at angle 0)
+    mf.angle = Math.atan2(-mf.vx, mf.vy);
+
+    // Collision with player
+    const pdx = mf.x - player.x;
+    const pdy = mf.y - player.y;
+    if (Math.sqrt(pdx * pdx + pdy * pdy) < mf.size / 2 + PLAYER_RADIUS * 0.7) {
+      state.gameOver = true;
+    }
+
+    // Collision with bullets — takes 3 hits to kill
+    for (let bi = bullets.length - 1; bi >= 0; bi--) {
+      const b = bullets[bi];
+      const bdx = mf.x - b.x;
+      const bdy = mf.y - b.y;
+      if (Math.sqrt(bdx * bdx + bdy * bdy) < mf.size / 2 + b.radius) {
+        bullets.splice(bi, 1);
+        mf.hp--;
+        if (mf.hp <= 0) {
+          meanFishes.splice(mi, 1);
+          state.score += 3;
+        }
+        break;
+      }
+    }
+
+    // Remove if it has wandered far off-screen
+    if (
+      mf.x < -mf.size * 2 || mf.x > canvas.width  + mf.size * 2 ||
+      mf.y < -mf.size * 2 || mf.y > canvas.height + mf.size * 2
+    ) {
+      meanFishes.splice(mi, 1);
     }
   }
 }

@@ -1,5 +1,5 @@
 import { canvas, ctx } from "./canvas.js";
-import { state, player, bullets, enemies, bugs, VERSION, PLAYER_RADIUS, POWER_DURATION, BUG_LIFETIME, BUG_FADE_DURATION } from "./state.js";
+import { state, player, bullets, enemies, bugs, meanFishes, VERSION, PLAYER_RADIUS, POWER_DURATION, BUG_LIFETIME, BUG_FADE_DURATION, MEAN_FISH_MAX_HP } from "./state.js";
 import { drawAxolotl } from "./axolotl.js";
 import { drawFish } from "./fish.js";
 import { drawBug } from "./bug.js";
@@ -52,6 +52,31 @@ export function draw() {
   // Enemies
   enemies.forEach(e => {
     drawFish(e.x, e.y, e.size, e.angle ?? 0);
+  });
+
+  // Mean fish — drawn with a red tint and health pips
+  meanFishes.forEach(mf => {
+    ctx.save();
+    ctx.filter = "hue-rotate(155deg) saturate(2.2) brightness(1.1)";
+    drawFish(mf.x, mf.y, mf.size, mf.angle ?? 0);
+    ctx.filter = "none";
+    ctx.restore();
+
+    // Health pips above the fish
+    const pipR   = 7;
+    const pipGap = pipR * 2.6;
+    const pipY   = mf.y - mf.size * 0.72;
+    const startX = mf.x - ((MEAN_FISH_MAX_HP - 1) / 2) * pipGap;
+    for (let p = 0; p < MEAN_FISH_MAX_HP; p++) {
+      const px = startX + p * pipGap;
+      ctx.beginPath();
+      ctx.arc(px, pipY, pipR, 0, Math.PI * 2);
+      ctx.fillStyle   = p < mf.hp ? "#ff3030" : "rgba(255,255,255,0.18)";
+      ctx.fill();
+      ctx.strokeStyle = "rgba(0,0,0,0.5)";
+      ctx.lineWidth   = 1.5;
+      ctx.stroke();
+    }
   });
 
   // Bugs — fade out during the final BUG_FADE_DURATION ms of their lifetime

@@ -6,6 +6,11 @@ export const PLAYER_SPEED = 6;
 export const PLAYER_RADIUS = 28;
 export const BUG_RADIUS = 16;
 
+export const MEAN_FISH_SPEED    = 3;     // px/frame — slower than the player
+export const MEAN_FISH_SIZE     = 110;   // draw size
+export const MEAN_FISH_MAX_HP   = 3;     // bubbles needed to kill it
+export const MEAN_FISH_INTERVAL = 20000; // ms between mean-fish spawns
+
 export const BASE_BULLET_INTERVAL  = 700;  // ms between bubbles normally
 export const POWER_BULLET_INTERVAL = 350;  // ms between bubbles while powered up
 export const POWER_SPEED_BOOST     = 4;    // px/frame added while powered up
@@ -32,6 +37,7 @@ export const player = {
   angle: 0, // radians, 0 = facing up
 };
 
-export const bullets = [];
-export const enemies = [];
-export const bugs    = [];
+export const bullets    = [];
+export const enemies    = [];
+export const bugs       = [];
+export const meanFishes = [];
