@@ -20,11 +20,13 @@ setInterval(() => {
 // Spawn enemies
 setInterval(() => {
   if (!state.gameStarted || state.gameOver) return;
+  const speed = 2 + Math.random() * 2;
   enemies.push({
     x: Math.random() * canvas.width,
     y: -80,
     size: 80,
-    speed: 2 + Math.random() * 2,
+    speed,
+    vx: (Math.random() * 2 - 1) * speed,
   });
 }, 1000);
 

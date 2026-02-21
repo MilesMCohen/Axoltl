@@ -32,6 +32,19 @@ export function update() {
   for (let ei = enemies.length - 1; ei >= 0; ei--) {
     const e = enemies[ei];
     e.y += e.speed;
+    e.x += e.vx;
+
+    // Bounce off side walls
+    if (e.x - e.size / 2 < 0) {
+      e.x = e.size / 2;
+      e.vx = Math.abs(e.vx);
+    } else if (e.x + e.size / 2 > canvas.width) {
+      e.x = canvas.width - e.size / 2;
+      e.vx = -Math.abs(e.vx);
+    }
+
+    // Face the direction of travel (fish drawn pointing down = angle 0)
+    e.angle = Math.atan2(-e.vx, e.speed);
 
     // Collision with player
     const pdx = e.x - player.x;

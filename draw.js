@@ -50,7 +50,7 @@ export function draw() {
 
   // Enemies
   enemies.forEach(e => {
-    drawFish(e.x, e.y, e.size);
+    drawFish(e.x, e.y, e.size, e.angle ?? 0);
   });
 
   // HUD

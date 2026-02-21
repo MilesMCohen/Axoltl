@@ -1,12 +1,14 @@
 import { ctx } from "./canvas.js";
 
-// Draws a menacing fish facing downward (head at bottom, tail at top).
+// Draws a menacing fish facing in the given direction.
+// angle=0 means facing down (default travel direction); rotate to match velocity.
 // cx/cy is the body center; size controls overall scale.
-export function drawFish(cx, cy, size) {
+export function drawFish(cx, cy, size, angle = 0) {
   const s = size / 50;
 
   ctx.save();
   ctx.translate(cx, cy);
+  ctx.rotate(angle);
 
   const bodyColor  = "#2e6b8c";
   const bodyDark   = "#1a3f55";
