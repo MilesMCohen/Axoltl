@@ -23,6 +23,10 @@
       ">Enable Tilt &amp; Start</button>
       <div style="font-size: 14px; color: #555;">v1.0.4</div>
     </div>
-    <script src="./main.js?v=1.0.4"></script>
+    <script>
+      var s = document.createElement('script');
+      s.src = './main.js?t=' + Date.now();
+      document.body.appendChild(s);
+    </script>
   </body>
 </html>
