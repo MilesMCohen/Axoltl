@@ -17,16 +17,34 @@ setInterval(() => {
   });
 }, 400);
 
-// Spawn enemies
+// Spawn enemies aimed at the player with a small random spread
 setInterval(() => {
   if (!state.gameStarted || state.gameOver) return;
-  const speed = 4 + Math.random() * 3;
+
+  const spawnX = Math.random() * canvas.width;
+  const spawnY = -80;
+  const totalSpeed = 4 + Math.random() * 3;
+
+  // Direction from spawn point toward the player
+  const dx = player.x - spawnX;
+  const dy = player.y - spawnY;
+  const len = Math.sqrt(dx * dx + dy * dy);
+
+  // Random angular spread (±0.4 rad ≈ ±23°) so they sometimes miss
+  const spread = (Math.random() - 0.5) * 0.4;
+  const cos = Math.cos(spread);
+  const sin = Math.sin(spread);
+
+  // Rotate the unit direction vector by the spread angle
+  const nx = (dx / len) * cos - (dy / len) * sin;
+  const ny = (dx / len) * sin + (dy / len) * cos;
+
   enemies.push({
-    x: Math.random() * canvas.width,
-    y: -80,
+    x: spawnX,
+    y: spawnY,
     size: 80,
-    speed,
-    vx: (Math.random() * 2 - 1) * speed,
+    speed: ny * totalSpeed,
+    vx:   nx * totalSpeed,
   });
 }, 1000);
 
