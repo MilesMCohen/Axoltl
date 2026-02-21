@@ -1,6 +1,6 @@
 import { canvas } from "./canvas.js";
 
-export const VERSION = "1.3.0";
+export const VERSION = "1.4.0";
 
 export const PLAYER_SPEED = 6;
 export const PLAYER_RADIUS = 28;
