@@ -1,6 +1,8 @@
-import { state, player, bullets, enemies } from "./state.js";
+import { state, player, bullets, enemies, VERSION } from "./state.js";
 
 export function initInput() {
+  document.getElementById("version-label").textContent = `v${VERSION}`;
+
   document.getElementById("start-btn").onclick = () => {
     player.x = window.innerWidth / 2;
     player.y = window.innerHeight / 2;
