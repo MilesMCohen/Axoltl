@@ -1,6 +1,7 @@
 import { canvas, ctx } from "./canvas.js";
 import { state, player, bullets, enemies, VERSION, PLAYER_RADIUS } from "./state.js";
 import { drawAxolotl } from "./axolotl.js";
+import { drawFish } from "./fish.js";
 
 export function draw() {
   ctx.fillStyle = "#111";
@@ -49,17 +50,7 @@ export function draw() {
 
   // Enemies
   enemies.forEach(e => {
-    ctx.beginPath();
-    ctx.arc(e.x, e.y, e.size / 2, 0, Math.PI * 2);
-    ctx.fillStyle = "orange";
-    ctx.fill();
-    ctx.fillStyle = "#6b2600";
-    ctx.beginPath();
-    ctx.arc(e.x - 6, e.y - 4, 3, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(e.x + 6, e.y - 4, 3, 0, Math.PI * 2);
-    ctx.fill();
+    drawFish(e.x, e.y, e.size);
   });
 
   // HUD

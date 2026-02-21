@@ -53,6 +53,6 @@ export function update() {
       }
     }
 
-    if (e.y > canvas.height + 40) enemies.splice(ei, 1);
+    if (e.y > canvas.height + e.size) enemies.splice(ei, 1);
   }
 }

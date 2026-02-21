@@ -22,8 +22,8 @@ setInterval(() => {
   if (!state.gameStarted || state.gameOver) return;
   enemies.push({
     x: Math.random() * canvas.width,
-    y: -30,
-    size: 30,
+    y: -80,
+    size: 80,
     speed: 2 + Math.random() * 2,
   });
 }, 1000);
