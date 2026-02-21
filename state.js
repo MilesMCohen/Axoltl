@@ -1,24 +1,25 @@
 import { canvas } from "./canvas.js";
 
-export const VERSION = "1.5.1";
+export const VERSION = "1.6.1";
 
 export const PLAYER_SPEED = 6;
 export const PLAYER_RADIUS = 28;
 export const BUG_RADIUS = 16;
 
-// Base bullet interval (ms) and minimum after power-ups
-export const BASE_BULLET_INTERVAL = 400;
-export const MIN_BULLET_INTERVAL  = 120;
+export const BASE_BULLET_INTERVAL  = 700;  // ms between bubbles normally
+export const POWER_BULLET_INTERVAL = 350;  // ms between bubbles while powered up
+export const POWER_SPEED_BOOST     = 4;    // px/frame added while powered up
+export const POWER_DURATION        = 5000; // ms the power-up lasts
 
 // Mutable game state wrapped in an object so imports stay in sync
 export const state = {
   gameStarted: false,
   score: 0,
   gameOver: false,
-  bugsEaten:      0,
-  speedBoost:     0,   // added to PLAYER_SPEED; +0.8 per bug, capped at +6
-  bulletInterval: BASE_BULLET_INTERVAL,
-  lastBulletTime: 0,
+  speedBoost:      0,                   // 0 normally; POWER_SPEED_BOOST while active
+  bulletInterval:  BASE_BULLET_INTERVAL,
+  lastBulletTime:  0,
+  powerUpExpiry:   0,                   // performance.now() deadline; 0 = inactive
 };
 
 export const player = {

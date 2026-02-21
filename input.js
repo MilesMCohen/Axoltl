@@ -19,10 +19,10 @@ export function initInput() {
     if (state.gameOver) {
       state.score          = 0;
       state.gameOver       = false;
-      state.bugsEaten      = 0;
       state.speedBoost     = 0;
       state.bulletInterval = BASE_BULLET_INTERVAL;
       state.lastBulletTime = 0;
+      state.powerUpExpiry  = 0;
       enemies.length = 0;
       bullets.length = 0;
       bugs.length    = 0;

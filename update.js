@@ -1,14 +1,23 @@
 import { canvas } from "./canvas.js";
 import {
   state, player, bullets, enemies, bugs,
-  PLAYER_SPEED, PLAYER_RADIUS, BUG_RADIUS, MIN_BULLET_INTERVAL,
+  PLAYER_SPEED, PLAYER_RADIUS, BUG_RADIUS,
+  BASE_BULLET_INTERVAL, POWER_BULLET_INTERVAL, POWER_SPEED_BOOST, POWER_DURATION,
 } from "./state.js";
 
 export function update() {
   if (!state.gameStarted || state.gameOver) return;
 
-  // Auto-shoot bubbles at the current (dynamic) interval
   const now = performance.now();
+
+  // Expire the power-up when its 10-second window closes
+  if (state.powerUpExpiry > 0 && now >= state.powerUpExpiry) {
+    state.powerUpExpiry  = 0;
+    state.speedBoost     = 0;
+    state.bulletInterval = BASE_BULLET_INTERVAL;
+  }
+
+  // Auto-shoot bubbles at the current (dynamic) interval
   if (now - state.lastBulletTime >= state.bulletInterval) {
     state.lastBulletTime = now;
     bullets.push({
@@ -114,14 +123,14 @@ export function update() {
     if (bug.y < m)                    { bug.y = m;                     bug.vy =  Math.abs(bug.vy); }
     if (bug.y > canvas.height - m)    { bug.y = canvas.height - m;     bug.vy = -Math.abs(bug.vy); }
 
-    // Player eats the bug
+    // Player eats the bug — activate (or reset) the 10-second power-up
     const ex = bug.x - player.x;
     const ey = bug.y - player.y;
     if (Math.sqrt(ex * ex + ey * ey) < BUG_RADIUS + PLAYER_RADIUS * 0.85) {
       bugs.splice(i, 1);
-      state.bugsEaten++;
-      state.speedBoost    = Math.min(6,                   state.speedBoost    + 0.8);
-      state.bulletInterval = Math.max(MIN_BULLET_INTERVAL, state.bulletInterval - 35);
+      state.powerUpExpiry  = now + POWER_DURATION;
+      state.speedBoost     = POWER_SPEED_BOOST;
+      state.bulletInterval = POWER_BULLET_INTERVAL;
     }
   }
 }

@@ -1,5 +1,5 @@
 import { canvas, ctx } from "./canvas.js";
-import { state, player, bullets, enemies, bugs, VERSION, PLAYER_RADIUS } from "./state.js";
+import { state, player, bullets, enemies, bugs, VERSION, PLAYER_RADIUS, POWER_DURATION } from "./state.js";
 import { drawAxolotl } from "./axolotl.js";
 import { drawFish } from "./fish.js";
 import { drawBug } from "./bug.js";
@@ -63,26 +63,36 @@ export function draw() {
   ctx.textAlign = "left";
   ctx.fillText("Score: " + state.score, 20, 36);
 
-  // Power pip indicators — one small glowing dot per bug eaten
-  if (state.bugsEaten > 0) {
-    const pipCount = Math.min(state.bugsEaten, 8);
-    const pipRadius   = 6;
-    const pipSpacing  = 17;
-    const startX      = 20 + pipRadius;
-    const pipY        = 78;
-    for (let i = 0; i < pipCount; i++) {
-      const px = startX + i * pipSpacing;
-      const glow = ctx.createRadialGradient(px, pipY, 0, px, pipY, pipRadius * 2.2);
-      glow.addColorStop(0, "rgba(200, 255, 60, 0.5)");
-      glow.addColorStop(1, "rgba(200, 255, 60, 0)");
+  // Power-up countdown bar — only shown while the power-up is active
+  if (state.powerUpExpiry > 0) {
+    const elapsed  = performance.now();
+    const fraction = Math.max(0, (state.powerUpExpiry - elapsed) / POWER_DURATION);
+    const barW = 140;
+    const barH = 9;
+    const barX = 20;
+    const barY = 52;
+    const r    = barH / 2;
+
+    // Dark track
+    ctx.fillStyle = "rgba(255,255,255,0.1)";
+    ctx.beginPath();
+    ctx.roundRect(barX, barY, barW, barH, r);
+    ctx.fill();
+
+    // Filled portion with glow
+    const fillW = barW * fraction;
+    if (fillW > r * 2) {
+      const grad = ctx.createLinearGradient(barX, 0, barX + fillW, 0);
+      grad.addColorStop(0, "#a8e020");
+      grad.addColorStop(1, "#e8ff50");
+      ctx.save();
+      ctx.shadowColor  = "#c8ff40";
+      ctx.shadowBlur   = 8;
+      ctx.fillStyle    = grad;
       ctx.beginPath();
-      ctx.arc(px, pipY, pipRadius * 2.2, 0, Math.PI * 2);
-      ctx.fillStyle = glow;
+      ctx.roundRect(barX, barY, fillW, barH, r);
       ctx.fill();
-      ctx.beginPath();
-      ctx.arc(px, pipY, pipRadius, 0, Math.PI * 2);
-      ctx.fillStyle = "#c8ff40";
-      ctx.fill();
+      ctx.restore();
     }
   }
 
