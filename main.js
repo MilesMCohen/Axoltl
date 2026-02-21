@@ -1,6 +1,6 @@
 // Tap-to-Move Arcade Shooter
 
-const VERSION = "1.1.0";
+const VERSION = "1.2.0";
 
 const canvas = document.createElement("canvas");
 const ctx = canvas.getContext("2d");
